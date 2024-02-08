@@ -75,14 +75,67 @@ public class Scanner {
         }
 
         switch (ch) {
+
+            case '/':
+                  advance();
+                  return new Token (TokenType.SLASH,"/");
+  
             case '+':
                 advance();
-                return new Token (PLUS,"+");
+                return new Token (TokenType.PLUS,"+");
             case '-':
                 advance();
-                return new Token (MINUS,"-");
-            case '"':
-                return string();
+                return new Token (TokenType.MINUS,"-"); 
+            case '*':
+                advance();
+                return new Token (TokenType.ASTERISK,"*"); 
+            case '.':
+                advance();
+                return new Token (TokenType.DOT,"."); 
+            case '&':
+                advance();
+                return new Token (TokenType.AND,"&"); 
+            case '|':
+                advance();
+                return new Token (TokenType.OR,"|"); 
+            case '~':
+                advance();
+                return new Token (TokenType.NOT,"~"); 
+
+            case '>':
+                advance();
+                return new Token (TokenType.GT,">"); 
+            case '<':
+                advance();
+                return new Token (TokenType.LT,"<"); 
+            case '=':
+                advance();
+                return new Token (TokenType.EQ,"="); 
+        
+            case '(':
+                advance();
+                return new Token (TokenType.LPAREN,"("); 
+            case ')':
+                advance();
+                return new Token (TokenType.RPAREN,")"); 
+            case '{':
+                advance();
+                return new Token (TokenType.LBRACE,"{"); 
+            case '}':
+                advance();
+                return new Token (TokenType.RBRACE,"}"); 
+            case '[':
+                advance();
+                return new Token (TokenType.LBRACKET,"["); 
+            case ']':
+                advance();
+                return new Token (TokenType.RBRACKET,"]"); 
+            case ';':
+                advance();
+                return new Token (TokenType.SEMICOLON,";"); 
+            case ',':
+                advance();
+                return new Token (TokenType.COMMA,",");
             case 0:
                 return new Token (EOF,"EOF");
             default:

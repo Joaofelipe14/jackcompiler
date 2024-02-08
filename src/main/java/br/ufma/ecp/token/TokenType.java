@@ -12,17 +12,23 @@ public enum TokenType {
 
 
      IDENT,
-
- 
-     // keywords
-     WHILE, CLASS,CONSTRUCTOR,FUNCTION,
-     METHOD,FIELD,STATIC,VAR,INT,
-     CHAR,BOOLEAN,VOID,TRUE,FALSE,
-     NULL,THIS,LET,DO,IF,ELSE, RETURN,
-
      EOF,
+ 
 
-     ILLEGAL;
+    // symbols
+    LPAREN,RPAREN,
+    LBRACE, RBRACE,
+    LBRACKET,RBRACKET,
+
+    COMMA, SEMICOLON, DOT,ASTERISK, SLASH,
+    AND, OR, NOT,   
+    LT, GT, EQ,
+    // keywords
+    WHILE, CLASS,CONSTRUCTOR,FUNCTION,
+    METHOD,FIELD,STATIC,VAR,INT,
+    CHAR,BOOLEAN,VOID,TRUE,FALSE,
+    NULL,THIS,LET,DO,IF,ELSE, RETURN,
+    ILLEGAL;
 
      static public boolean isSymbol (char c) {
         String symbols = "{}()[].,;+-*/&|<>=~";
