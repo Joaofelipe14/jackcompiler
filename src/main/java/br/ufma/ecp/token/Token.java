@@ -15,7 +15,7 @@ public class Token {
     public String toString() {
         var type = this.type.toString();
         if (type.equals("NUMBER"))
-            type =  "intConst";
+            type =  "integerConstant";
 
         if (type.equals("STRING"))
             type =  "stringConst";
@@ -29,8 +29,12 @@ public class Token {
         if (TokenType.isKeyword(this.type) )
             type = "keyword";
     
+        String escapedLexeme = lexeme
+        .replace("&", "&amp;")
+        .replace("<", "&lt;")
+        .replace(">", "&gt;");
 
-        return "<"+ type +">" + lexeme + "</"+ type + ">";
+        return "<"+ type +"> " + escapedLexeme + " </"+ type + ">";
     }
     
 }
