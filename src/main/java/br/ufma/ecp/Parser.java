@@ -2,6 +2,7 @@ package br.ufma.ecp;
 
 import br.ufma.ecp.token.Token;
 import br.ufma.ecp.token.TokenType;
+import static br.ufma.ecp.token.TokenType.*;
 
 public class Parser {
 
@@ -121,4 +122,22 @@ public class Parser {
             printNonTerminal("/expression");
         }
      
+            // letStatement -> 'let' identifier( '[' expression ']' )? '=' expression ';’
+    void parseLet() {
+        printNonTerminal("letStatement");
+        expectPeek(LET);
+        expectPeek(IDENT);
+
+        if (peekTokenIs(LBRACKET)) {
+            expectPeek(LBRACKET);
+            parseExpression();
+            expectPeek(RBRACKET);
+        }
+
+        expectPeek(EQ);
+        parseExpression();
+        expectPeek(SEMICOLON);
+        printNonTerminal("/letStatement");
+    }
+
 }
