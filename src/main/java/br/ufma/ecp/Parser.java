@@ -109,20 +109,21 @@ public class Parser {
     }
 
     static public boolean isOperator(String op) {
-        return op!= "" && "+-*/<>=~&|".contains(op);
-}
-        // term (op term)*
-        void parseExpression() {
-            printNonTerminal("expression");
-            parseTerm ();
-            while (isOperator(peekToken.lexeme)) {
-                expectPeek(peekToken.type);
-                parseTerm();
-            }
-            printNonTerminal("/expression");
+        return op != "" && "+-*/<>=~&|".contains(op);
+    }
+
+    // term (op term)*
+    void parseExpression() {
+        printNonTerminal("expression");
+        parseTerm();
+        while (isOperator(peekToken.lexeme)) {
+            expectPeek(peekToken.type);
+            parseTerm();
         }
-     
-            // letStatement -> 'let' identifier( '[' expression ']' )? '=' expression ';’
+        printNonTerminal("/expression");
+    }
+
+    // letStatement -> 'let' identifier( '[' expression ']' )? '=' expression ';’
     void parseLet() {
         printNonTerminal("letStatement");
         expectPeek(LET);
@@ -140,4 +141,23 @@ public class Parser {
         printNonTerminal("/letStatement");
     }
 
+    // identifier '(' ')'
+    void parseSubroutineCall() {
+        printNonTerminal("subroutineCall");
+        expectPeek(IDENT);
+        expectPeek(LPAREN);
+        expectPeek(RPAREN);
+        printNonTerminal("/subroutineCall");
+
+    }
+
+    // 'do' subroutineCall ';'
+    // 'do' subroutineCall ';'
+    public void parseDo() {
+        printNonTerminal("doStatement");
+        expectPeek(DO);
+        parseSubroutineCall();
+        expectPeek(SEMICOLON);
+        printNonTerminal("/doStatement");
+    }
 }
