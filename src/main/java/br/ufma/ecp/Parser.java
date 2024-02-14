@@ -250,8 +250,14 @@ public class Parser {
                 case LET:
                     parseLet();
                     break;
+                case WHILE:
+                    parseWhile();
+                    break;
                 case IF:
                     parseIf();
+                    break;
+                case RETURN:
+                    parseReturn();
                     break;
                 case DO:
                     parseDo();
@@ -261,4 +267,93 @@ public class Parser {
             }
         }
     
+            // 'while' '(' expression ')' '{' statements '}'
+    void parseWhile() {
+        printNonTerminal("whileStatement");
+        expectPeek(WHILE);
+        expectPeek(LPAREN);
+        parseExpression();
+        expectPeek(RPAREN);
+        expectPeek(LBRACE);
+        parseStatements();
+        expectPeek(RBRACE);
+        printNonTerminal("/whileStatement");
+    }
+
+        // ReturnStatement -> 'return' expression? ';'
+        void parseReturn() {
+            printNonTerminal("returnStatement");
+            expectPeek(RETURN);
+            if (!peekTokenIs(SEMICOLON)) {
+                parseExpression();
+            }
+            expectPeek(SEMICOLON);
+    
+            printNonTerminal("/returnStatement");
+        }
+
+
+        void parseSubroutineDec() {
+            printNonTerminal("subroutineDec");
+            expectPeek(CONSTRUCTOR, FUNCTION, METHOD);
+            // 'int' | 'char' | 'boolean' | className
+            expectPeek(VOID, INT, CHAR, BOOLEAN, IDENT);
+            expectPeek(IDENT);
+    
+            expectPeek(LPAREN);
+            parseParameterList();
+            expectPeek(RPAREN);
+            parseSubroutineBody();
+    
+            printNonTerminal("/subroutineDec");
+        }
+
+        void parseParameterList() {
+            printNonTerminal("parameterList");
+    
+            if (!peekTokenIs(RPAREN)) // verifica se tem pelo menos uma expressao
+            {
+                expectPeek(INT, CHAR, BOOLEAN, IDENT);
+                expectPeek(IDENT);
+            }
+    
+            while (peekTokenIs(COMMA)) {
+                expectPeek(COMMA);
+                expectPeek(INT, CHAR, BOOLEAN, IDENT);
+                expectPeek(IDENT);
+            }
+    
+            printNonTerminal("/parameterList");
+        }
+    
+        void parseSubroutineBody() {
+    
+            printNonTerminal("subroutineBody");
+            expectPeek(LBRACE);
+            while (peekTokenIs(VAR)) {
+                parseVarDec();
+            }
+    
+            parseStatements();
+            expectPeek(RBRACE);
+            printNonTerminal("/subroutineBody");
+        }
+
+        // 'var' type varName ( ',' varName)* ';'
+        void parseVarDec() {
+            printNonTerminal("varDec");
+            expectPeek(VAR);
+            // 'int' | 'char' | 'boolean' | className
+            expectPeek(INT, CHAR, BOOLEAN, IDENT);
+            expectPeek(IDENT);
+
+            while (peekTokenIs(COMMA)) {
+                expectPeek(COMMA);
+                expectPeek(IDENT);
+            }
+
+            expectPeek(SEMICOLON);
+            printNonTerminal("/varDec");
+        }
+
 }
