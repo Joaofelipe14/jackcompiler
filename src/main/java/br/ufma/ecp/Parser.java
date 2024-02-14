@@ -106,4 +106,19 @@ public class Parser {
 
         printNonTerminal("/term");
     }
+
+    static public boolean isOperator(String op) {
+        return op!= "" && "+-*/<>=~&|".contains(op);
+}
+        // term (op term)*
+        void parseExpression() {
+            printNonTerminal("expression");
+            parseTerm ();
+            while (isOperator(peekToken.lexeme)) {
+                expectPeek(peekToken.type);
+                parseTerm();
+            }
+            printNonTerminal("/expression");
+        }
+     
 }
