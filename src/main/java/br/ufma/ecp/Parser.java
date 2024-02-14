@@ -6,8 +6,8 @@ import static br.ufma.ecp.token.TokenType.*;
 
 public class Parser {
 
-    private static class ParseError extends RuntimeException {
-    }
+    private static class ParseError extends RuntimeException {}
+
 
     private Scanner scan;
     private Token currentToken;
@@ -81,30 +81,47 @@ public class Parser {
         return new ParseError();
     }
 
+    // term -> number | identifier | stringConstant | keywordConstant
     void parseTerm() {
         printNonTerminal("term");
         switch (peekToken.type) {
             case NUMBER:
-                expectPeek(TokenType.NUMBER);
+                expectPeek(NUMBER);
                 break;
             case STRING:
-                expectPeek(TokenType.STRING);
+                expectPeek(STRING);
                 break;
             case FALSE:
             case NULL:
             case TRUE:
-                expectPeek(TokenType.FALSE, TokenType.NULL, TokenType.TRUE);
-                break;
             case THIS:
-                expectPeek(TokenType.THIS);
+                expectPeek(FALSE, NULL, TRUE, THIS);
                 break;
             case IDENT:
-                expectPeek(TokenType.IDENT);
+                expectPeek(IDENT);
+                if (peekTokenIs(LPAREN) || peekTokenIs(DOT)) {
+                    parseSubroutineCall();
+                } else { // variavel comum ou array
+                    if (peekTokenIs(LBRACKET)) { // array
+                        expectPeek(LBRACKET);
+                        parseExpression();
+                        expectPeek(RBRACKET);
+                    } 
+                }
+                break;
+            case LPAREN:
+                expectPeek(LPAREN);
+                parseExpression();
+                expectPeek(RPAREN);
+                break;
+            case MINUS:
+            case NOT:
+                expectPeek(MINUS, NOT);
+                parseTerm();
                 break;
             default:
-                throw error(peekToken, "term expected");
+                ;
         }
-
         printNonTerminal("/term");
     }
 
@@ -141,15 +158,38 @@ public class Parser {
         printNonTerminal("/letStatement");
     }
 
-    // identifier '(' ')'
+    // subroutineCall -> subroutineName '(' expressionList ')' | (className|varName)
+    // '.' subroutineName '(' expressionList ')
     void parseSubroutineCall() {
-        expectPeek(IDENT);
-        expectPeek(LPAREN);
-        expectPeek(RPAREN);
-
+        if (peekTokenIs(LPAREN)) {
+            expectPeek(LPAREN);
+            parseExpressionList();
+            expectPeek(RPAREN);
+        } else {
+            expectPeek(DOT);
+            expectPeek(IDENT);
+            expectPeek(LPAREN);
+            parseExpressionList();
+            expectPeek(RPAREN);
+        }
     }
 
-    // 'do' subroutineCall ';'
+    void parseExpressionList() {
+        printNonTerminal("expressionList");
+
+        if (!peekTokenIs(RPAREN)) // verifica se tem pelo menos uma expressao
+        {
+            parseExpression();
+        }
+
+        // procurando as demais
+        while (peekTokenIs(COMMA)) {
+            expectPeek(COMMA);
+            parseExpression();
+        }
+
+        printNonTerminal("/expressionList");
+    }
     // 'do' subroutineCall ';'
     public void parseDo() {
         printNonTerminal("doStatement");
@@ -177,4 +217,48 @@ public class Parser {
             expectPeek(SEMICOLON);
             printNonTerminal("/classVarDec");
         }
+
+
+        void parseIf() {
+            printNonTerminal("ifStatement");
+            expectPeek(IF);
+            expectPeek(LPAREN);
+            parseExpression();
+            expectPeek(RPAREN);
+            expectPeek(LBRACE);
+            parseStatements();
+            expectPeek(RBRACE);
+            printNonTerminal("/ifStatement");
+        }
+
+        void parseStatements() {
+            printNonTerminal("statements");
+            while (peekToken.type == WHILE ||
+                    peekToken.type == IF ||
+                    peekToken.type == LET ||
+                    peekToken.type == DO ||
+                    peekToken.type == RETURN) {
+                parseStatement();
+            }
+    
+            printNonTerminal("/statements");
+        }
+
+
+        void parseStatement() {
+            switch (peekToken.type) {
+                case LET:
+                    parseLet();
+                    break;
+                case IF:
+                    parseIf();
+                    break;
+                case DO:
+                    parseDo();
+                    break;
+                default:
+                    throw error(peekToken, "Expected a statement");
+            }
+        }
+    
 }

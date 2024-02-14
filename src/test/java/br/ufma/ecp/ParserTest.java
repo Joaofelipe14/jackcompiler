@@ -216,4 +216,47 @@ public class ParserTest extends TestSupport {
         assertEquals(expectedResult, result);
     }
 
+    @Test
+    public void testParseIf() {
+      var input = "if (direction = 1) { do square.moveUp(); }";
+      var expectedResult = """
+          <ifStatement>
+          <keyword> if </keyword>
+          <symbol> ( </symbol>
+          <expression>
+            <term>
+              <identifier> direction </identifier>
+            </term>
+            <symbol> = </symbol>
+            <term>
+              <integerConstant> 1 </integerConstant>
+            </term>
+          </expression>
+          <symbol> ) </symbol>
+          <symbol> { </symbol>
+          <statements>
+            <doStatement>
+              <keyword> do </keyword>
+              <identifier> square </identifier>
+              <symbol> . </symbol>
+              <identifier> moveUp </identifier>
+              <symbol> ( </symbol>
+              <expressionList>
+              </expressionList>
+              <symbol> ) </symbol>
+              <symbol> ; </symbol>
+            </doStatement>
+          </statements>
+          <symbol> } </symbol>
+        </ifStatement>
+              """;
+
+      var parser = new Parser(input.getBytes(StandardCharsets.UTF_8));
+      parser.parseIf();
+      var result = parser.XMLOutput();
+      expectedResult = expectedResult.replaceAll("  ", "");
+      result = result.replaceAll("\r", ""); // no codigo em linux não tem o retorno de carro
+      assertEquals(expectedResult, result);
+  }
+
 }
