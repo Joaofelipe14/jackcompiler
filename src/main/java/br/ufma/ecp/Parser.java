@@ -143,11 +143,9 @@ public class Parser {
 
     // identifier '(' ')'
     void parseSubroutineCall() {
-        printNonTerminal("subroutineCall");
         expectPeek(IDENT);
         expectPeek(LPAREN);
         expectPeek(RPAREN);
-        printNonTerminal("/subroutineCall");
 
     }
 
@@ -156,8 +154,27 @@ public class Parser {
     public void parseDo() {
         printNonTerminal("doStatement");
         expectPeek(DO);
+        expectPeek(IDENT);
         parseSubroutineCall();
         expectPeek(SEMICOLON);
         printNonTerminal("/doStatement");
     }
+
+
+        // classVarDec → ( 'static' | 'field' ) type varName ( ',' varName)* ';'
+        void parseClassVarDec() {
+            printNonTerminal("classVarDec");
+            expectPeek(FIELD, STATIC);
+            // 'int' | 'char' | 'boolean' | className
+            expectPeek(INT, CHAR, BOOLEAN, IDENT);
+            expectPeek(IDENT);
+    
+            while (peekTokenIs(COMMA)) {
+                expectPeek(COMMA);
+                expectPeek(IDENT);
+            }
+    
+            expectPeek(SEMICOLON);
+            printNonTerminal("/classVarDec");
+        }
 }
