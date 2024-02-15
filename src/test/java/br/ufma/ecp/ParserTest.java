@@ -1,6 +1,8 @@
 package br.ufma.ecp;
 
 import static org.junit.Assert.assertEquals;
+
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import org.junit.Test;
 
@@ -151,50 +153,37 @@ public class ParserTest extends TestSupport {
         assertEquals(expectedResult, result);
     }
 
-    @Test
-
-    public void testParseSubroutineCall() {
-        // subroutineName '(' expressionList? ')' | (className|varName)
-        // '.' subroutineName '(' expressionList? ')'
-        var input = "hello()";
-        var parser = new Parser(input.getBytes(StandardCharsets.UTF_8));
-        parser.parseSubroutineCall();
-
-        var expectedResult = """
-                <identifier> hello </identifier>
-                <symbol> ( </symbol>
-                <symbol> ) </symbol>
-                """;
-
-        var result = parser.XMLOutput();
-        result = result.replaceAll("\r", "");
-        expectedResult = expectedResult.replaceAll("  ", "");
-        assertEquals(expectedResult, result);
-
-    }
 
     @Test
     public void testParseDo() {
-        var input = "do hello();";
+        var input = "do Sys.wait(5);";
         var parser = new Parser(input.getBytes(StandardCharsets.UTF_8));
         parser.parseDo();
 
         var expectedResult = """
-                  <doStatement>
-                  <keyword> do </keyword>
-                  <subroutineCall>
-                  <identifier> hello </identifier>
-                  <symbol> ( </symbol>
-                  <symbol> ) </symbol>
-                  </subroutineCall>
-                  <symbol> ; </symbol>
-                </doStatement>
-                      """;
+            <doStatement>
+            <keyword> do </keyword>
+            <identifier> Sys </identifier>
+            <symbol> . </symbol>
+            <identifier> wait </identifier>
+            <symbol> ( </symbol>
+            <expressionList>
+              <expression>
+                <term>
+                  <integerConstant> 5 </integerConstant>
+                </term>
+              </expression>
+            </expressionList>
+            <symbol> ) </symbol>
+            <symbol> ; </symbol>
+          </doStatement>
+                """;
         var result = parser.XMLOutput();
         expectedResult = expectedResult.replaceAll("  ", "");
         result = result.replaceAll("\r", ""); // no codigo em linux não tem o retorno de carro
         assertEquals(expectedResult, result);
     }
+
 
     @Test
     public void testParseClassVarDec() {
@@ -356,6 +345,65 @@ public class ParserTest extends TestSupport {
         assertEquals(expectedResult, result);
     }
 
+    @Test
+    public void testVarDeclaration () {
+
+      var input = """
+        class Point {
+          field int x, y;
+          constructor Point new(int Ax, int Ay) {
+            var int Ax;
+            
+            let x = Ax;
+            let y = Ay;
+            return this;
+         }
+        }
+        """;;
+    var parser = new Parser(input.getBytes(StandardCharsets.UTF_8));
+    parser.parse();
+    var result = parser.XMLOutput();
+    System.out.println(result);
+
+    }
+
+
+    @Test
+    public void testParserWithLessSquareGame() throws IOException {
+        var input = fromFile("ExpressionLessSquare/SquareGame.jack");
+        var expectedResult =  fromFile("ExpressionLessSquare/SquareGame.xml");
+
+        var parser = new Parser(input.getBytes(StandardCharsets.UTF_8));
+        parser.parse();
+        var result = parser.XMLOutput();
+        expectedResult = expectedResult.replaceAll("  ", "");
+        assertEquals(expectedResult, result);
+    }
+
+    @Test
+    public void testParserWithSquareGame() throws IOException {
+        var input = fromFile("Square/SquareGame.jack");
+        var expectedResult =  fromFile("Square/SquareGame.xml");
+
+        var parser = new Parser(input.getBytes(StandardCharsets.UTF_8));
+        parser.parse();
+        var result = parser.XMLOutput();
+        expectedResult = expectedResult.replaceAll("  ", "");
+        assertEquals(expectedResult, result);
+    }
+
+
+    @Test
+    public void testParserWithSquare() throws IOException {
+        var input = fromFile("Square/Square.jack");
+        var expectedResult =  fromFile("Square/Square.xml");
+
+        var parser = new Parser(input.getBytes(StandardCharsets.UTF_8));
+        parser.parse();
+        var result = parser.XMLOutput();
+        expectedResult = expectedResult.replaceAll("  ", "");
+        assertEquals(expectedResult, result);
+    }
 
 
 }

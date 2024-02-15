@@ -25,8 +25,29 @@ public class Parser {
     }
 
     public void parse() {
-
+        parseClass();
     }
+
+    void parseClass() {
+        printNonTerminal("class");
+        expectPeek(CLASS);
+        expectPeek(IDENT);
+        expectPeek(LBRACE);
+        
+        while (peekTokenIs(STATIC) || peekTokenIs(FIELD)) {
+            System.out.println(peekToken);
+            parseClassVarDec();
+        }
+    
+        while (peekTokenIs(FUNCTION) || peekTokenIs(CONSTRUCTOR) || peekTokenIs(METHOD)) {
+            parseSubroutineDec();
+        }
+
+        expectPeek(RBRACE);
+
+        printNonTerminal("/class");
+    }
+
 
     // funções auxiliares
     public String XMLOutput() {
