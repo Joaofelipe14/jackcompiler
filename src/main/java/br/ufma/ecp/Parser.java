@@ -7,7 +7,7 @@ import static br.ufma.ecp.token.TokenType.*;
 public class Parser {
 
     private static class ParseError extends RuntimeException {}
-
+    private VMWriter vmWriter = new VMWriter();
 
     private Scanner scan;
     private Token currentToken;
@@ -376,5 +376,7 @@ public class Parser {
             expectPeek(SEMICOLON);
             printNonTerminal("/varDec");
         }
-
+        public String VMOutput() {
+            return vmWriter.vmOutput();
+        }
 }
