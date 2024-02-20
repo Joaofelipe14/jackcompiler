@@ -41,6 +41,9 @@ Certifique-se de ter instalado os seguintes requisitos antes de executar o compi
 
    Por fim, será criado um arquivo no formado .vm para ser usado no VMEemulator que a Nand2Tetris disponibiliza.
 
+4. Link YouTube:
+
+   https://www.youtube.com/watch?v=auyDeCz0hv0
 
 
 
