@@ -6,7 +6,7 @@ Este é o repositório do projeto da disciplina de Compiladores, realizado como 
 
 ## Descrição
 
-Este projeto vamos implementar um compilador em duas etapas. A análise léxica poderá ser implementada manualmente ou com auxílio de expressões regulares. Utilizaremos um analisador sintático preditivo implementado manualmente, sem a geração de uma Árvore Sintática Abstrata (AST). Em vez disso, iremos gerar diretamente uma representação intermediária stack-based.
+Este projeto vamos implementar um compilador em duas etapas. A análise léxica implementada manualmente ou com auxílio de expressões regulares. Utilizaremos um analisador sintático preditivo implementado manualmente, sem a geração de uma Árvore Sintática Abstrata (AST). Em vez disso, iremos gerar diretamente uma representação intermediária (stack-based).
 
 Ao final do processo, essa linguagem intermediária será traduzida para um código Assembly de uma arquitetura de computador simplificada, conforme especificado no contexto do curso Nand2Tetris https://www.nand2tetris.org/.
 
@@ -14,6 +14,8 @@ Ao final do processo, essa linguagem intermediária será traduzida para um cód
 
 - `src/`: Este diretório contém os arquivos-fonte do compilador.
 - `tests/`: Aqui estão os casos de teste para verificar a corretude da implementação.
+- `Projects/11`: Aqui estão projeto na linguagem jack para geração do codigo intermediario.
+
 
 ## Pré-Requisitos
 
@@ -30,15 +32,15 @@ Certifique-se de ter instalado os seguintes requisitos antes de executar o compi
    git clone https://github.com/Joaofelipe14/jackcompiler.git
    ```
 
-2. Navegue até o diretório do projeto:
+3. Configuracao do arquivo launch.json:
+   
+   Aqui escolha o progama que voce deseja compilar 
+- "args": "Projects/11/Seven/"
 
-   ```bash
-   cd projeto-compiladores
-   ```
+3. Execute o arquivo App.java na interface do Vscode:
 
-3. Execute o compilador:
+   Por fim, será criado um arquivo no formado .vm para ser usado no VMEemulator que a Nand2Tetris disponibiliza.
 
-   ```bash
-   java -jar compilador.jar arquivoDeEntrada.jack
-   ```
+
+
 
