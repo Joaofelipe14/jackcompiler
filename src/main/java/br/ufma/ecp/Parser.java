@@ -159,8 +159,15 @@ public class Parser {
                     if (peekTokenIs(LBRACKET)) { // array
                         expectPeek(LBRACKET);
                         parseExpression();
+                        vmWriter.writePush(kind2Segment(sym.kind()), sym.index());
+                        vmWriter.writeArithmetic(Command.ADD);
+        
+
                         expectPeek(RBRACKET);
-                    }  else {
+                        vmWriter.writePop(Segment.POINTER, 1); // pop address pointer into pointer 1
+                        vmWriter.writePush(Segment.THAT, 0);   // push the value of the address pointer back onto stack
+        
+                    } else {
                         vmWriter.writePush(kind2Segment(sym.kind()), sym.index());
                     }
                 }
@@ -216,18 +223,28 @@ public class Parser {
 
         var symbol = symTable.resolve(currentToken.lexeme);
 
-        if (peekTokenIs(TokenType.LBRACKET)) {
-            expectPeek(TokenType.LBRACKET);
-            parseExpression();         
-            expectPeek(TokenType.RBRACKET);
+        if (peekTokenIs(LBRACKET)) { // array
+            expectPeek(LBRACKET);
+            parseExpression();
+            
+            vmWriter.writePush(kind2Segment(symbol.kind()), symbol.index());
+            vmWriter.writeArithmetic(Command.ADD);
+    
+            expectPeek(RBRACKET);
+
+
 
             isArray = true;
         }
 
-        expectPeek(TokenType.EQ);
+        expectPeek(EQ);
         parseExpression();
 
         if (isArray) {
+            vmWriter.writePop(Segment.TEMP, 0);    // push result back onto stack
+            vmWriter.writePop(Segment.POINTER, 1); // pop address pointer into pointer 1
+            vmWriter.writePush(Segment.TEMP, 0);   // push result back onto stack
+            vmWriter.writePop(Segment.THAT, 0);    // Store right hand side evaluation in THAT 0.
     
 
         } else {
