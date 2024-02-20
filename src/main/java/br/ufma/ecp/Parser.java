@@ -55,7 +55,6 @@ public class Parser {
         expectPeek(LBRACE);
 
         while (peekTokenIs(STATIC) || peekTokenIs(FIELD)) {
-            System.out.println(peekToken);
             parseClassVarDec();
         }
 
@@ -479,7 +478,6 @@ public class Parser {
 
         expectPeek(TokenType.CONSTRUCTOR, TokenType.FUNCTION, TokenType.METHOD);
         var subroutineType = currentToken.type;
-        System.out.println(subroutineType);
 
         if (subroutineType == TokenType.METHOD) {
             symTable.define("this", className, Kind.ARG);

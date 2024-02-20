@@ -16,7 +16,7 @@
             "request": "launch",
             "mainClass": "br.ufma.ecp.App",
             "projectName": "jackcompiler",
-            "args": "Projects/11/Seven/"
+            "args": "Projects/11/Pong/"
         }
     ]
 }
